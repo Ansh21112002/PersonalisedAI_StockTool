@@ -1,0 +1,10 @@
+matplotlib
+numpy
+pandas
+pandas_datareader
+scikit_learn
+ta
+yfinance
+openpyxl
+flask
+flask_cors
