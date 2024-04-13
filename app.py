@@ -8,10 +8,62 @@ from CONSTANTS import *
 from NewsAPI import *
 from flask_cors import CORS
 import pandas as pd
+from flask_pymongo import PyMongo
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
+from bcrypt import hashpw, gensalt, checkpw
 
 app = Flask(__name__)
 CORS(app)
 
+
+uri = 'mongodb+srv://team_user_name:team_user_name@clustermain.bcisjhm.mongodb.net/?retryWrites=true&w=majority&appName=ClusterMain'
+app.config['MONGO_URI'] = uri
+# mongo = PyMongo(app)
+# print(f"MongoDB Connection: {mongo.db.client.server_info()}")
+client = MongoClient(uri, server_api=ServerApi('1'))
+try:
+    client.admin.command('ping')
+    print("Pinged your deployment. You successfully connected to MongoDB!")
+except Exception as e:
+    print(e)
+
+users = client['majorproject']['users']
+
+@app.route('/api/auth/signup', methods=['POST'])
+def signup():
+    data = request.json
+    username = data.get('username')
+    password = data.get('password')
+
+    if not username or not password:
+        return jsonify({'error': 'Username and password are required'}), 400
+
+    existing_user = users.find_one({'username': username})
+    if existing_user:
+        return jsonify({'error': 'Username already exists'}), 400
+
+    hashed_password = hashpw(password.encode('utf-8'), gensalt())
+    user_id = users.insert_one({
+        'username': username,
+        'password': hashed_password,
+    }).inserted_id
+
+    return jsonify({'user_id': str(user_id)}), 201
+
+@app.route('/api/auth/login', methods=['POST'])
+def login():
+    data = request.json
+    username = data.get('username')
+    password = data.get('password')
+
+    if not username or not password:
+        return jsonify({'error': 'Username and password are required'}), 400
+
+    user = users.find_one({'username': username})
+    if not user or not checkpw(password.encode('utf-8'), user['password']):
+        return jsonify({'error': 'Invalid credentials'}), 401
+    return jsonify({'message': 'Login successful', 'token':str(user.get('_id'))}), 200
 
 @app.route("/",methods = ['GET'])
 def index():

@@ -12,6 +12,5 @@ nltk
 newsapi-python
 streamlit
 tensorflow
-flask_pymongo
-bson
+Flask-PyMongo
 bcrypt
