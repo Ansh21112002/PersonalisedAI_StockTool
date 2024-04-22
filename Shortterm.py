@@ -34,8 +34,6 @@ def adx(df):
         return 1
     return 0
 
-
-
 def WMA(df):
   wma_13 = ta.trend.WMAIndicator(close=df['Close'],window=13,fillna=True).wma()
   wma_55 = ta.trend.WMAIndicator(close=df['Close'],window=55,fillna=True).wma()
@@ -59,8 +57,6 @@ def WMA_data(df):
     }
 
     return wma_dict
-
-
 
 def adx_data(df):
     adx = ta.trend.ADXIndicator(
@@ -95,9 +91,6 @@ def bb_data(df):
     return bb_dict
 
 
-
-
-
 def timestamp(df):
     wma = ta.trend.WMAIndicator(close=df['Close'], window=13, fillna=True).wma()
     wma_reset = wma.reset_index()
@@ -105,6 +98,5 @@ def timestamp(df):
     timestamps = wma_reset['Date'].tolist()
 
     return timestamps
-
 
 # print(WMA_data(stock_data))

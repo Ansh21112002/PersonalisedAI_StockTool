@@ -9,7 +9,7 @@ api_key = '5fc65c42b6ba4139b7b8e6d57cbcbff9'
 endpoint = 'https://newsapi.org/v2/everything'
 
 
-nltk.download('vader_lexicon')
+# nltk.download('vader_lexicon')
 sia = SentimentIntensityAnalyzer()
 
 # def getNews(ticker):
